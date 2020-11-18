@@ -10,7 +10,7 @@ def get_default_settings():
     return settings
 
 class Node:
-    def __init__(self, x, y, grad, hess, depth, lambda_):
+    def __init__(self, x, y, grad, hess, depth, lambda_, gamma):
         self.x = x
         self.y = y
         self.grad = grad
@@ -21,7 +21,13 @@ class Node:
         self.split_col_index = None
         self.left_node = None
         self.right_node = None
+        self.max_gain = 0
         self.lambda_ = lambda_
+        self.gamma = gamma
+
+        self.total_grad = np.sum(grad)
+        self.total_hess = np.sum(hess)
+        self.current_objective_value = -0.5 * (self.total_grad ** 2 / (self.total_hess + lambda_)) + gamma
 
     def predict(self, x):
         return np.array([self.predict_single_x(single_x) for single_x in x])
